@@ -189,7 +189,7 @@ Ouvre `%APPDATA%\Claude\claude_desktop_config.json` et remplace le contenu par :
 
 ### 3.6 Configurer le prompt système
 
-Dans Claude Desktop → clique sur ton avatar → **Profile** → colle le contenu du fichier `claude_system_prompt_v5.md` dans le champ "What would you like Claude to know about you?".
+Dans Claude Desktop → clique sur ton avatar → **Profile** → colle le contenu du fichier `claude_system_prompt.md` dans le champ "What would you like Claude to know about you?".
 
 ### 3.7 Vérifier la connexion
 
@@ -315,4 +315,5 @@ C:\Users\TON_NOM\AppData\Local\Programs\Python\Python311\python.exe -m pip insta
 |---------|-------------|
 | `server.py` | Serveur MCP de surlignage PDF |
 | `claude_system_prompt_v5.md` | Prompt système pour Claude Desktop |
+| `claude_desktop_config.json` | Fichier de configuration de Claude Desktop |
 | `README.md` | Ce fichier |
