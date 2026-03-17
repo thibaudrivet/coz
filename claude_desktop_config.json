@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "obsidian-vault": {
+      "command": "C:\\Users\\STAGIAIRE\\AppData\\Roaming\\npm\\mcp-server-filesystem.cmd",
+      "args": [
+        "P:\\Obsidian Vaults\\Recherche"
+      ]
+    },
+    "zotero": {
+      "command": "C:\\Users\\STAGIAIRE\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\zotero-mcp.exe",
+      "env": {
+        "ZOTERO_LOCAL": "true",
+        "ZOTERO_LIBRARY_TYPE": "user"
+      }
+    },
+    "pdf-highlighter": {
+    "command": "C:\\Users\\STAGIAIRE\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+    "args": ["P:\\Obsidian Vaults\\Recherche\\40 - Ressources\\pdf_highlight_mcp\\server.py"],
+    "env": {
+      "VAULT_PATH": "P:\\Obsidian Vaults\\Recherche"
+      }
+    }
+  },
+  "preferences": {
+    "coworkScheduledTasksEnabled": false,
+    "ccdScheduledTasksEnabled": false,
+    "coworkWebSearchEnabled": true,
+    "sidebarMode": "chat",
+    "keepAwakeEnabled": true
+  }
+}
