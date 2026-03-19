@@ -19,7 +19,9 @@ Article / PDF found
         ↓
 [MCP Highlighter] → highlights PDF with color-coded annotations
         ↓
-[Obsidian + PDF++] → clickable note, annotated PDF
+[pix2tex OCR] → extracts mathematical formulas as LaTeX
+        ↓
+[Obsidian + PDF++] → clickable note, annotated PDF, rendered equations
         ↓
 [Anki] → spaced repetition flashcards synced from the note
 ```
@@ -36,12 +38,44 @@ Article / PDF found
 | Anki | latest | [apps.ankiweb.net](https://apps.ankiweb.net) |
 | Node.js | LTS (v20+) | [nodejs.org](https://nodejs.org) |
 | Python | 3.11 | [python.org](https://www.python.org) |
+| pix2tex | latest | installed automatically via setup |
 | Claude Desktop | latest | [claude.ai/download](https://claude.ai/download) |
 | Everything *(optional)* | latest | [voidtools.com](https://www.voidtools.com) |
 
 > ⚠️ If you have multiple Python versions installed, always use **Python 3.11** for every `pip` command in this guide.
 
 > 💡 **Everything** is an optional but highly recommended file search tool for Windows. It indexes your entire drive instantly — very useful for locating PDFs by filename and diagnosing issues with the `all_pdf` folder.
+
+---
+
+## Quick Setup (Recommended)
+
+Instead of configuring everything manually, run the automated setup script:
+
+1. Clone or download this repository
+2. Right-click `setup.ps1` → **Run with PowerShell**
+3. Follow the interactive prompts
+
+The script will automatically:
+- Detect Node.js and Python 3.11
+- Create the vault folder structure
+- Install all Python and npm dependencies
+- Download and install Obsidian plugins from GitHub
+- Copy `server.py` into your vault
+- Generate `claude_desktop_config.json` with the correct paths
+
+> ⚠️ If PowerShell blocks execution, run this first in an admin terminal:
+> `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`
+
+### What still requires manual setup after the script
+
+| Step | Where |
+|------|-------|
+| Enable Zotero local API | Zotero → Edit → Settings → Advanced |
+| Install & configure ZotMoov | Zotero → Tools → Add-ons |
+| Install AnkiConnect | Anki → Tools → Add-ons → code `2055492159` |
+| Paste the system prompt | Claude Desktop → Profile |
+| Restart Claude Desktop | Taskbar icon → right-click → Quit |
 
 ---
 
@@ -260,6 +294,42 @@ List the available highlighting colors
 
 ---
 
+## Part 4b — Mathematical Formula Extraction (pix2tex)
+
+Papers in economics and urban economics often contain dense mathematical notation. The PDF highlighter server includes two tools powered by [pix2tex](https://github.com/lukas-blecher/LaTeX-OCR) to extract formulas as LaTeX directly into your notes.
+
+### How it works
+```
+Formula detected in PDF (image or encoded text)
+        ↓
+pix2tex OCR → converts to LaTeX
+        ↓
+Claude inserts in note :
+$$\hat{\beta} = (X'X)^{-1}X'y$$
+```
+
+### Usage in Claude Desktop
+
+**Extract a specific formula** (with manual coordinates):
+```
+Extract the formula at the bottom of page 8 of [article]
+```
+
+**Extract all formulas on a page automatically**:
+```
+Extract all formulas from page 5 of [article]
+```
+
+Claude will highlight the detected zones in purple in the PDF and return the LaTeX ready to paste into your note.
+
+### Notes on accuracy
+
+- pix2tex may write the same formula in a different but mathematically equivalent form — this is normal
+- For best results, use `extract_formula` with manual coordinates on complex or multi-line equations
+- Scanned PDFs without a text layer may require higher DPI — the script uses 216 DPI by default
+
+---
+
 ## Part 5 — Daily Workflow
 
 ### Checklist Before Starting
@@ -382,5 +452,7 @@ C:\Users\YOUR_NAME\AppData\Local\Programs\Python\Python311\python.exe -m pip ins
 |------|-------------|
 | `server.py` | MCP PDF highlighting server |
 | `claude_system_prompt_v6.md` | System prompt for Claude Desktop |
+| `setup.ps1` | PowerShell launcher — run this to start setup |
+| `setup.py`  | Interactive Python setup script (called by setup.ps1) |
 | `README.md` | This file (English) |
 | `LISEZMOI.md` | French version |

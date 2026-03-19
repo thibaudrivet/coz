@@ -19,7 +19,9 @@ Article / PDF trouvé
         ↓
 [MCP Highlighter] → surligne le PDF avec des annotations colorées
         ↓
-[Obsidian + PDF++] → note cliquable, PDF annoté
+[pix2tex OCR] → extrait les formules mathématiques en LaTeX
+        ↓
+[Obsidian + PDF++] → note cliquable, PDF annoté, équations rendues
         ↓
 [Anki] → flashcards de répétition espacée synchronisées depuis la note
 ```
@@ -42,6 +44,37 @@ Article / PDF trouvé
 > ⚠️ Si tu as plusieurs versions de Python installées, utilise toujours **Python 3.11** pour chaque commande `pip` de ce guide.
 
 > 💡 **Everything** est un outil de recherche de fichiers optionnel mais très recommandé sous Windows. Il indexe l'intégralité de ton disque instantanément — très utile pour localiser des PDFs par nom de fichier et diagnostiquer des problèmes avec le dossier `all_pdf`.
+
+---
+
+## Installation rapide (recommandé)
+
+Au lieu de tout configurer manuellement, lance le script de setup automatique :
+
+1. Clone ou télécharge ce dépôt
+2. Clic droit sur `setup.ps1` → **Exécuter avec PowerShell**
+3. Suis les instructions interactives
+
+Le script va automatiquement :
+- Détecter Node.js et Python 3.11
+- Créer la structure de dossiers du vault
+- Installer toutes les dépendances Python et npm
+- Télécharger et installer les plugins Obsidian depuis GitHub
+- Copier `server.py` dans ton vault
+- Générer `claude_desktop_config.json` avec les bons chemins
+
+> ⚠️ Si PowerShell bloque l'exécution, lance d'abord ceci dans un terminal admin :
+> `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`
+
+### Ce qui nécessite encore une action manuelle
+
+| Étape | Où |
+|-------|----|
+| Activer l'API locale Zotero | Zotero → Édition → Paramètres → Avancé |
+| Installer et configurer ZotMoov | Zotero → Outils → Extensions |
+| Installer AnkiConnect | Anki → Outils → Extensions → code `2055492159` |
+| Coller le prompt système | Claude Desktop → Profile |
+| Redémarrer Claude Desktop | Icône barre des tâches → clic droit → Quitter |
 
 ---
 
@@ -260,6 +293,42 @@ Liste les couleurs de surlignage disponibles
 
 ---
 
+## Partie 4b — Extraction de formules mathématiques (pix2tex)
+
+Les articles en économie et économie urbaine contiennent souvent des notations mathématiques denses. Le serveur MCP inclut deux outils basés sur [pix2tex](https://github.com/lukas-blecher/LaTeX-OCR) pour extraire les formules en LaTeX directement dans tes notes.
+
+### Comment ça marche
+```
+Formule détectée dans le PDF (image ou texte encodé)
+        ↓
+pix2tex OCR → convertit en LaTeX
+        ↓
+Claude insère dans la note :
+$$\hat{\beta} = (X'X)^{-1}X'y$$
+```
+
+### Utilisation dans Claude Desktop
+
+**Extraire une formule précise** (avec coordonnées manuelles) :
+```
+Extrais la formule en bas de la page 8 de [article]
+```
+
+**Extraire toutes les formules d'une page automatiquement** :
+```
+Extrais toutes les formules de la page 5 de [article]
+```
+
+Claude surligne les zones détectées en violet dans le PDF et retourne le LaTeX prêt à insérer dans ta note.
+
+### Notes sur la précision
+
+- pix2tex peut écrire la même formule d'une façon différente mais mathématiquement équivalente — c'est normal
+- Pour les équations complexes ou multi-lignes, préfère `extract_formula` avec des coordonnées manuelles
+- Les PDFs scannés sans couche texte peuvent nécessiter un DPI plus élevé — le script utilise 216 DPI par défaut
+
+---
+
 ## Partie 5 — Utilisation quotidienne
 
 ### Checklist avant de démarrer
@@ -382,5 +451,7 @@ C:\Users\TON_NOM\AppData\Local\Programs\Python\Python311\python.exe -m pip insta
 |---------|-------------|
 | `server.py` | Serveur MCP de surlignage PDF |
 | `claude_system_prompt_v6.md` | Prompt système pour Claude Desktop |
+| `setup.ps1` | Lanceur PowerShell — exécute ce fichier pour démarrer |
+| `setup.py`  | Script Python de configuration interactive (appelé par setup.ps1) |
 | `README.md` | Ce fichier (anglais) |
 | `LISEZMOI.md` | Ce fichier (français) |
