@@ -114,7 +114,7 @@ Appelle `highlight_multiple` avec **toutes les citations ET tous les passages co
 Si l'article contient des formules mathématiques importantes :
 - Appelle `extract_all_formulas` sur les pages concernées pour extraire automatiquement toutes les formules
 - Pour les formules complexes ou mal détectées, utilise `extract_formula` avec des coordonnées manuelles
-- Insère les formules extraites dans la section **Formules clés** de la note au format LaTeX
+- Insère les formules extraites dans la section **Formules clés** de la note au format `$$...$$` (syntaxe Obsidian)
 - pix2tex peut écrire une formule différemment mais mathématiquement équivalente — c'est normal
 
 #### Étape 5 — Créer la note avec les liens confirmés
@@ -197,7 +197,7 @@ $${{formule LaTeX extraite par pix2tex}}$$
 
 {{question de synthèse sur l'argument principal}}::{{réponse résumant la thèse}}
 
-{{formule clé de l'article en mots}}::$${{formule LaTeX}}$$
+{{formule clé en mots}}}::\[{{formule LaTeX}}\]
 ```
 
 ---
@@ -217,13 +217,42 @@ $${{formule LaTeX extraite par pix2tex}}$$
    - Les formules clés si l'article en contient
 4. **Syntaxe stricte** : `Question::Réponse` sur une seule ligne, séparateur `::`
 5. **Questions courtes, réponses concises** — une idée par carte
-6. **Pour les formules mathématiques**, génère une carte dédiée :
+6. **Pour les formules mathématiques dans les flashcards**, utilise la syntaxe LaTeX compatible Anki — DIFFÉRENTE de la syntaxe Obsidian :
+   - Inline : `\(\hat{\beta}\)` (et NON `$\hat{\beta}$`)
+   - Display : `\[\hat{\beta} = (X'X)^{-1}X'y\]` (et NON `$$...$$`)
+
+   Exemple de bonne carte avec formule :
    ```
-   Quelle est la formule du modèle gravitaire de migration ?::$$J_{i \to j} = K \frac{P_i^\mu P_j^\nu}{d_{ij}^2}$$
+   Quelle est la formule OLS des moindres carrés ?::\[\hat{\beta} = (X'X)^{-1}X'y\]
    ```
-7. **Pour les concepts de code Python / SIG**, utilise des blocs de code dans la réponse
+   ```
+   Quelle est la formule du modèle gravitaire ?::\[J_{i \to j} = K \frac{P_i^\mu P_j^\nu}{d_{ij}^2}\]
+   ```
+
+   **Important** : dans la note Obsidian (hors flashcards), continue d'utiliser `$$...$$`. La syntaxe Anki `\[...\]` s'applique UNIQUEMENT dans les lignes de flashcards `::`.
+
+7. **Pour les concepts de code Python / SIG**, utilise des blocs de code dans la réponse :
+   ```
+   Quelle fonction GeoPandas pour lire un shapefile ?::
+   ```python
+   import geopandas as gpd
+   gdf = gpd.read_file("fichier.shp")
+   ```
+   ```
 8. **Ne jamais copier-coller** une citation dans une carte — reformule toujours en tes propres mots
 9. **Les cartes doivent être autonomes** — compréhensibles sans lire la note
+10. **Formatage LaTeX pour les formules** — utilise toujours `\[...\]` pour les formules display dans les flashcards
+
+**Exemples de bonnes cartes :**
+```
+Qu'est-ce que la densification urbaine selon Broitman 2015 ?::Augmentation de la densité de population ou de bâti dans une zone urbaine existante, distincte de l'étalement périurbain.
+
+Quelle est la conclusion principale de Broitman et Koomen (2015) ?::La densification et l'étalement urbain sont des processus simultanés et non exclusifs dans les métropoles européennes.
+
+Quel indicateur utilisent Broitman et Koomen pour mesurer la densification ?::La variation de densité de population à l'échelle des cellules de grille (500m × 500m) sur la période 1990-2010.
+
+Quelle est la formule du modèle gravitaire de migration ?::\[J_{i \to j} = K \frac{P_i^\mu P_j^\nu}{d_{ij}^2}\]
+```
 
 ---
 
@@ -247,7 +276,7 @@ statut: "à valider"
 
 ## Formulation mathématique
 {{si applicable}}
-$${{formule LaTeX}}$$
+$${{formule LaTeX — syntaxe Obsidian}}$$
 
 ## Nuances et débats
 {{Points de tension ou de débat dans la littérature}}
@@ -266,7 +295,7 @@ $${{formule LaTeX}}$$
 
 {{nuance ou débat clé}}::{{explication courte}}
 
-{{formule associée au concept}}::$${{formule LaTeX}}$$
+{{formule associée au concept en mots}}::\[{{formule LaTeX — syntaxe Anki}}\]
 ```
 
 ---
@@ -281,9 +310,10 @@ $${{formule LaTeX}}$$
 6. **Toujours tenter le surlignage** avant de créer la note — utilise `highlight_multiple` pour traiter toutes les citations en une seule fois
 7. **Toujours tenter l'extraction de formules** si l'article est mathématiquement dense — utilise `extract_all_formulas` page par page
 8. **Toujours générer les flashcards** à la fin de chaque note de lecture et note permanente
-9. **Toujours proposer des liens** vers des notes existantes du vault
-10. **Signaler si un MOC** dans `00 - MOC/` devrait être mis à jour
-11. **Toujours indiquer** à la fin : "📁 Note créée dans `90 - Claude/...` — pense à la valider, corriger les flashcards si besoin, et déplacer quand tu es satisfait."
+9. **Syntaxe LaTeX dans les notes** : `$$...$$` — **dans les flashcards** : `\[...\]` (display) ou `\(...\)` (inline)
+10. **Toujours proposer des liens** vers des notes existantes du vault
+11. **Signaler si un MOC** dans `00 - MOC/` devrait être mis à jour
+12. **Toujours indiquer** à la fin : "📁 Note créée dans `90 - Claude/...` — pense à la valider, corriger les flashcards si besoin, et déplacer quand tu es satisfait."
 
 ---
 
@@ -296,8 +326,8 @@ $${{formule LaTeX}}$$
 4. Identifie tous les passages contextuels pertinents (Catégorie B) avec leur couleur
 5. Appelle `highlight_multiple` pour surligner toutes les citations ET passages en une fois
 6. Si l'article contient des formules mathématiques, appelle `extract_all_formulas` sur les pages concernées
-7. Crée la note de lecture dans `90 - Claude/Notes de lecture/` avec les liens des citations confirmées et les formules extraites
-8. Génère 4 à 8 flashcards dans la section `## Flashcards` de la note, y compris des cartes sur les formules clés
+7. Crée la note de lecture dans `90 - Claude/Notes de lecture/` avec les liens des citations confirmées et les formules extraites en `$$...$$`
+8. Génère 4 à 8 flashcards dans la section `## Flashcards`, avec syntaxe `\[...\]` pour les formules
 9. Identifie les concepts clés → propose des notes permanentes dans `90 - Claude/Notes permanentes/`
 10. Propose les liens avec les notes existantes du vault
 11. Suggère si un MOC doit être mis à jour
@@ -307,4 +337,4 @@ $${{formule LaTeX}}$$
 2. Cherche les références complémentaires dans Zotero
 3. Crée la synthèse dans `90 - Claude/Synthèses/`
 4. Cite les notes avec `[[lien]]`, les PDFs avec `[[Bibliographie/Zotero/all_pdf/...pdf#page=XX]]`
-5. Inclus les formules LaTeX pertinentes issues des notes de lecture
+5. Inclus les formules LaTeX pertinentes issues des notes de lecture en syntaxe `$$...$$`

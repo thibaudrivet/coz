@@ -114,7 +114,7 @@ Call `highlight_multiple` with **all citations AND all contextual passages** in 
 If the article contains important mathematical formulas:
 - Call `extract_all_formulas` on relevant pages to automatically extract all formulas
 - For complex or poorly detected formulas, use `extract_formula` with manual coordinates
-- Insert extracted formulas in the **Key Formulas** section of the note in LaTeX format
+- Insert extracted formulas in the **Key Formulas** section of the note using `$$...$$` (Obsidian syntax)
 - pix2tex may write a formula differently but mathematically equivalently — this is normal
 
 #### Step 5 — Create the note with confirmed links
@@ -197,7 +197,7 @@ $${{LaTeX formula extracted by pix2tex}}$$
 
 {{synthesis question about the main argument}}::{{answer summarizing the thesis}}
 
-{{key formula from the article in words}}::$${{LaTeX formula}}$$
+{{key formula in words}}::\[{{LaTeX formula — Anki syntax}}\]
 ```
 
 ---
@@ -217,13 +217,35 @@ $${{LaTeX formula extracted by pix2tex}}$$
    - Key formulas if the article contains them
 4. **Strict syntax**: `Question::Answer` on a single line, `::` separator
 5. **Short questions, concise answers** — one idea per card
-6. **For mathematical formulas**, generate a dedicated card:
+6. **For mathematical formulas in flashcards**, use Anki-compatible LaTeX syntax — DIFFERENT from Obsidian syntax:
+   - Inline: `\(\hat{\beta}\)` (NOT `$\hat{\beta}$`)
+   - Display: `\[\hat{\beta} = (X'X)^{-1}X'y\]` (NOT `$$...$$`)
+
+   Examples of good formula cards:
    ```
-   What is the formula for the gravity model of migration?::$$J_{i \to j} = K \frac{P_i^\mu P_j^\nu}{d_{ij}^2}$$
+   What is the OLS estimator formula?::\[\hat{\beta} = (X'X)^{-1}X'y\]
    ```
+   ```
+   What is the gravity model of migration?::\[J_{i \to j} = K \frac{P_i^\mu P_j^\nu}{d_{ij}^2}\]
+   ```
+
+   **Important**: in the Obsidian note body (outside flashcards), keep using `$$...$$`. The Anki syntax `\[...\]` applies ONLY inside `::` flashcard lines.
+
 7. **For Python / GIS code concepts**, use code blocks in the answer
 8. **Never copy-paste** a citation into a card — always rephrase in your own words
 9. **Cards must be self-contained** — understandable without reading the note
+10. **LaTeX formatting for formulas** — always use `\[...\]` for display formulas in flashcards
+
+**Examples of good cards:**
+```
+What is urban densification according to Broitman 2015?::Increase in population or building density within an existing urban area, distinct from urban sprawl.
+
+What is the main conclusion of Broitman and Koomen (2015)?::Densification and urban sprawl are simultaneous and non-exclusive processes in European metropolises.
+
+What indicator do Broitman and Koomen use to measure densification?::Population density variation at grid cell level (500m × 500m) over the period 1990-2010.
+
+What is the gravity model of migration?::\[J_{i \to j} = K \frac{P_i^\mu P_j^\nu}{d_{ij}^2}\]
+```
 
 ---
 
@@ -247,7 +269,7 @@ status: "to validate"
 
 ## Mathematical Formulation
 {{if applicable}}
-$${{LaTeX formula}}$$
+$${{LaTeX formula — Obsidian syntax}}$$
 
 ## Nuances and Debates
 {{Points of tension or debate in the literature}}
@@ -266,7 +288,7 @@ $${{LaTeX formula}}$$
 
 {{key nuance or debate}}::{{short explanation}}
 
-{{formula associated with the concept}}::$${{LaTeX formula}}$$
+{{formula associated with the concept in words}}::\[{{LaTeX formula — Anki syntax}}\]
 ```
 
 ---
@@ -281,9 +303,10 @@ $${{LaTeX formula}}$$
 6. **Always attempt highlighting** before creating the note — use `highlight_multiple` to process all citations at once
 7. **Always attempt formula extraction** if the article is mathematically dense — use `extract_all_formulas` page by page
 8. **Always generate flashcards** at the end of each literature note and permanent note
-9. **Always suggest links** to existing vault notes
-10. **Flag if a MOC** in `00 - MOC/` should be updated
-11. **Always indicate** at the end: "📁 Note created in `90 - Claude/...` — remember to validate, correct flashcards if needed, and move when satisfied."
+9. **LaTeX syntax in notes**: `$$...$$` — **in flashcards**: `\[...\]` (display) or `\(...\)` (inline)
+10. **Always suggest links** to existing vault notes
+11. **Flag if a MOC** in `00 - MOC/` should be updated
+12. **Always indicate** at the end: "📁 Note created in `90 - Claude/...` — remember to validate, correct flashcards if needed, and move when satisfied."
 
 ---
 
@@ -296,8 +319,8 @@ $${{LaTeX formula}}$$
 4. Identify all relevant contextual passages (Category B) with their color
 5. Call `highlight_multiple` to highlight all citations AND passages at once
 6. If the article contains mathematical formulas, call `extract_all_formulas` on relevant pages
-7. Create the literature note in `90 - Claude/Literature Notes/` with confirmed citation links and extracted formulas
-8. Generate 4 to 8 flashcards in the `## Flashcards` section, including cards on key formulas
+7. Create the literature note in `90 - Claude/Literature Notes/` with confirmed citation links and extracted formulas in `$$...$$`
+8. Generate 4 to 8 flashcards in the `## Flashcards` section, using `\[...\]` syntax for formulas
 9. Identify key concepts → propose permanent notes in `90 - Claude/Permanent Notes/`
 10. Suggest links to existing vault notes
 11. Flag if a MOC should be updated
@@ -307,4 +330,4 @@ $${{LaTeX formula}}$$
 2. Search for complementary references in Zotero
 3. Create the synthesis in `90 - Claude/Syntheses/`
 4. Cite notes with `[[link]]`, PDFs with `[[Bibliography/Zotero/all_pdf/...pdf#page=XX]]`
-5. Include relevant LaTeX formulas from literature notes
+5. Include relevant LaTeX formulas from literature notes using `$$...$$` syntax
