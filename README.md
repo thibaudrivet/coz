@@ -1,157 +1,208 @@
-# 🧠 Workflow de recherche : Obsidian + Zotero + Claude + PDF++
+# 🧠 Academic Research Workflow: Obsidian + Zotero + Claude + PDF++ + Anki
 
-Un workflow complet pour la recherche académique en géographie urbaine et économie urbaine, combinant gestion bibliographique, prise de notes et intelligence artificielle.
+A complete workflow for academic research combining bibliography management, note-taking, AI assistance, and spaced repetition.
 
----
-
-## Vue d'ensemble
-
-```
-Article/PDF trouvé
-      ↓
-[Zotero] → capture métadonnées + PDF
-      ↓
-[ZotMoov] → copie le PDF dans le vault Obsidian
-      ↓
-[Claude Desktop] → lit Zotero + vault, crée la note
-      ↓
-[MCP Highlighter] → surligne le PDF avec couleurs codées
-      ↓
-[Obsidian + PDF++] → note cliquable, PDF annoté
-```
+> Originally built for urban geography and urban economics research, but adaptable to any academic field.
 
 ---
 
-## Prérequis
+## Overview
 
-| Outil | Version | Lien |
-|-------|---------|------|
+```
+Article / PDF found
+        ↓
+[Zotero] → captures metadata + PDF via browser connector
+        ↓
+[ZotMoov] → copies PDF into Obsidian vault with stable filename
+        ↓
+[Claude Desktop] → reads Zotero + vault, creates structured note
+        ↓
+[MCP Highlighter] → highlights PDF with color-coded annotations
+        ↓
+[Obsidian + PDF++] → clickable note, annotated PDF
+        ↓
+[Anki] → spaced repetition flashcards synced from the note
+```
+
+---
+
+## Requirements
+
+| Tool | Version | Link |
+|------|---------|------|
 | Windows 10/11 | — | — |
 | Obsidian | 1.x | [obsidian.md](https://obsidian.md) |
 | Zotero | 7.x | [zotero.org](https://www.zotero.org) |
+| Anki | latest | [apps.ankiweb.net](https://apps.ankiweb.net) |
 | Node.js | LTS (v20+) | [nodejs.org](https://nodejs.org) |
 | Python | 3.11 | [python.org](https://www.python.org) |
-| Claude Desktop | dernière version | [claude.ai/download](https://claude.ai/download) |
-| Everything (optionnel) | dernière version | [everything](https://www.voidtools.com/downloads/) |
+| Claude Desktop | latest | [claude.ai/download](https://claude.ai/download) |
+| Everything *(optional)* | latest | [voidtools.com](https://www.voidtools.com) |
 
-> ⚠️ Si tu as plusieurs versions de Python, utilise **Python 3.11** pour toutes les commandes `pip` de ce guide.
+> ⚠️ If you have multiple Python versions installed, always use **Python 3.11** for every `pip` command in this guide.
+
+> 💡 **Everything** is an optional but highly recommended file search tool for Windows. It indexes your entire drive instantly — very useful for locating PDFs by filename and diagnosing issues with the `all_pdf` folder.
 
 ---
 
-## Partie 1 — Obsidian
+## Part 1 — Obsidian
 
-### 1.1 Structure du vault
+### 1.1 Vault Structure
 
-Crée la structure suivante (ou adapte la tienne) :
+Create the following folder structure (or adapt to your own):
 
 ```
 Vault/
-├── 00 - MOC/
-├── 10 - Notes de lecture/
-├── 20 - Notes permanentes/
-├── 30 - Projets/
-├── 40 - Ressources/
+├── 00 - MOC/                    # Maps of Content — thematic indexes
+├── 10 - Literature Notes/       # One note per article/book (validated)
+├── 20 - Permanent Notes/        # Atomic ideas, key concepts (validated)
+├── 30 - Projects/               # Research project notes
+├── 40 - Resources/              # Methods, tools, scripts
 │   └── pdf_highlight_mcp/
-│       └── server.py          ← script de surlignage
-├── 90 - Claude/               ← toutes les créations de Claude
-│   ├── Notes de lecture/
-│   ├── Notes permanentes/
-│   └── Synthèses/
-└── Bibliographie/
+│       └── server.py            ← PDF highlighting script
+├── 90 - Claude/                 ← all Claude-generated content goes here
+│   ├── Literature Notes/
+│   ├── Permanent Notes/
+│   └── Syntheses/
+└── Bibliography/
     └── Zotero/
-        └── all_pdf/           ← tous les PDFs
+        └── all_pdf/             ← all PDFs with stable filenames
 ```
 
-### 1.2 Plugins à installer
+### 1.2 Plugins to Install
 
-Dans Obsidian → Paramètres → Plugins tiers → Parcourir :
+In Obsidian → Settings → Community Plugins → Browse:
 
-| Plugin | Utilité |
+| Plugin | Purpose |
 |--------|---------|
-| **PDF++** | Viewer PDF avancé + annotations cliquables |
-| **Local REST API** | Pont entre Obsidian et les outils externes |
-| **Dataview** | Requêtes dynamiques sur tes notes |
+| **PDF++** | Advanced PDF viewer + clickable annotations |
+| **Local REST API** | Bridge between Obsidian and external tools |
+| **Dataview** | Dynamic queries on your notes |
+| **Flashcards** (by Reupload) | Sync flashcards from notes to Anki |
 
-### 1.3 Configurer Local REST API
+### 1.3 Configure Local REST API
 
-1. Active le plugin Local REST API
-2. Va dans ses paramètres → copie la **clé API** générée
-3. Note le port (défaut : **27124**)
+1. Enable the Local REST API plugin
+2. Go to its settings → copy the generated **API key**
+3. Note the port (default: **27124**)
+
+### 1.4 Configure the Flashcards Plugin
+
+In the Flashcards plugin settings:
+
+| Setting | Value |
+|---------|-------|
+| Default deck name | `Research::Urban Geography` |
+| Flashcards #tag | `basic` |
+| Inline card separator | `::` |
+| Source support | ✅ enabled |
+| Inline ID support | ✅ enabled |
+| Code highlight support | ✅ enabled (if you use Python/GIS code) |
+| Folder-based deck name | ✅ enabled |
 
 ---
 
-## Partie 2 — Zotero
+## Part 2 — Zotero
 
-### 2.1 Plugins Zotero à installer
+### 2.1 Zotero Plugins to Install
 
-| Plugin | Lien | Utilité |
+| Plugin | Link | Purpose |
 |--------|------|---------|
-| **Better BibTeX** | [retorque.re/zotero-better-bibtex](https://retorque.re/zotero-better-bibtex/installation/) | Clés de citation stables |
-| **ZotMoov** | [github.com/wileyyugioh/zotmoov](https://github.com/wileyyugioh/zotmoov/releases) | Copie les PDFs dans le vault |
+| **Better BibTeX** | [retorque.re/zotero-better-bibtex](https://retorque.re/zotero-better-bibtex/installation/) | Stable citation keys |
+| **ZotMoov** | [github.com/wileyyugioh/zotmoov](https://github.com/wileyyugioh/zotmoov/releases) | Copies PDFs into vault |
 
-Installation : Zotero → Outils → Extensions → icône engrenage → *Install Add-on From File* → sélectionne le `.xpi`
+Installation: Zotero → Tools → Add-ons → gear icon → *Install Add-on From File* → select the `.xpi`
 
-### 2.2 Configurer ZotMoov
+### 2.2 Configure ZotMoov
 
-Zotero → Édition → Paramètres → **ZotMoov** :
+Zotero → Edit → Settings → **ZotMoov**:
 
-| Paramètre | Valeur |
-|-----------|--------|
-| Directory to Move/Copy Files To | `P:\Obsidian Vaults\Recherche\Bibliographie\Zotero\all_pdf` |
+| Setting | Value |
+|---------|-------|
+| Directory to Move/Copy Files To | `P:\Obsidian Vaults\Research\Bibliography\Zotero\all_pdf` |
 | File Behavior | **Copy** |
-| Automatically Move/Copy When Added | ✅ coché |
-| Automatically Move/Copy to Subdirectory | ☐ décoché |
+| Automatically Move/Copy When Added | ✅ checked |
+| Automatically Move/Copy to Subdirectory | ☐ unchecked |
 
-### 2.3 Activer l'API locale Zotero
+### 2.3 Enable Zotero Local API
 
-Zotero → Édition → Paramètres → **Avancé** :
-- Coche **"Autoriser d'autres applications sur cet ordinateur à communiquer avec Zotero"**
+Zotero → Edit → Settings → **Advanced**:
+- Check **"Allow other applications on this computer to communicate with Zotero"**
 
-### 2.4 Migrer les PDFs existants
+### 2.4 Migrate Existing PDFs
 
-Pour copier tous tes PDFs existants dans `all_pdf` :
-1. Sélectionne toute ta bibliothèque (`Ctrl+A`)
-2. Clic droit → **ZotMoov → Move/Copy Files**
+To copy all your existing PDFs into `all_pdf` in one go:
+1. Select your entire library (`Ctrl+A`)
+2. Right-click → **ZotMoov → Move/Copy Files**
 
 ---
 
-## Partie 3 — Claude Desktop
+## Part 3 — Anki
 
-### 3.1 Installation
+### 3.1 Install AnkiConnect
 
-Télécharge et installe [Claude Desktop](https://claude.ai/download).
+In Anki → Tools → Add-ons → Get Add-ons → enter code: **`2055492159`**
 
-> ℹ️ Claude Desktop nécessite un compte Anthropic avec crédits API ou abonnement.
+Restart Anki. It must remain **open in the background** for sync to work.
 
-### 3.2 Installer Node.js et le serveur MCP Obsidian
+### 3.2 How Flashcard Sync Works
+
+Claude automatically generates a `## Flashcards` section at the end of each literature note:
+
+```markdown
+## Flashcards
+#basic
+
+What is urban densification?::Increase in population or building density within an existing urban area, distinct from urban sprawl.
+
+What method do Broitman & Koomen use to measure densification?::Population density variation at grid cell level (500m × 500m) over 1990–2010.
+
+How to read a shapefile with GeoPandas?::
+    import geopandas as gpd
+    gdf = gpd.read_file("file.shp")
+```
+
+To sync to Anki: in Obsidian, press `Ctrl+P` → *Flashcards: Sync to Anki*
+
+---
+
+## Part 4 — Claude Desktop
+
+### 4.1 Installation
+
+Download and install [Claude Desktop](https://claude.ai/download).
+
+> ℹ️ Claude Desktop requires an Anthropic account with API credits or a subscription.
+
+### 4.2 Install Node.js and the Obsidian MCP Server
 
 ```powershell
-# Vérifier Node.js
+# Check Node.js
 node --version
 
-# Installer le serveur MCP filesystem (Anthropic officiel)
+# Install official Anthropic filesystem MCP server
 npm install -g @modelcontextprotocol/server-filesystem
 
-# Vérifier
+# Verify
 where mcp-server-filesystem
 ```
 
-### 3.3 Installer les dépendances Python
+### 4.3 Install Python Dependencies
 
 ```powershell
-C:\Users\TON_NOM\AppData\Local\Programs\Python\Python311\python.exe -m pip install pymupdf mcp zotero-mcp
+C:\Users\YOUR_NAME\AppData\Local\Programs\Python\Python311\python.exe -m pip install pymupdf mcp zotero-mcp
 ```
 
-### 3.4 Copier le script de surlignage
+### 4.4 Copy the Highlighting Script
 
-Copie le fichier `server.py` (fourni dans ce dossier) dans :
+Copy `server.py` (provided in this repository) to:
 ```
-P:\Obsidian Vaults\Recherche\40 - Ressources\pdf_highlight_mcp\server.py
+P:\Obsidian Vaults\Research\40 - Resources\pdf_highlight_mcp\server.py
 ```
 
-### 3.5 Configurer claude_desktop_config.json
+### 4.5 Configure claude_desktop_config.json
 
-Ouvre `%APPDATA%\Claude\claude_desktop_config.json` et remplace le contenu par :
+Open `%APPDATA%\Claude\claude_desktop_config.json` and replace its content with:
 
 ```json
 {
@@ -162,158 +213,174 @@ Ouvre `%APPDATA%\Claude\claude_desktop_config.json` et remplace le contenu par :
   },
   "mcpServers": {
     "obsidian-vault": {
-      "command": "C:\\Users\\TON_NOM\\AppData\\Roaming\\npm\\mcp-server-filesystem.cmd",
-      "args": ["P:\\Obsidian Vaults\\Recherche"]
+      "command": "C:\\Users\\YOUR_NAME\\AppData\\Roaming\\npm\\mcp-server-filesystem.cmd",
+      "args": ["P:\\Obsidian Vaults\\Research"]
     },
     "zotero": {
-      "command": "C:\\Users\\TON_NOM\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\zotero-mcp.exe",
+      "command": "C:\\Users\\YOUR_NAME\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\zotero-mcp.exe",
       "env": {
         "ZOTERO_LOCAL": "true",
         "ZOTERO_LIBRARY_TYPE": "user"
       }
     },
     "pdf-highlighter": {
-      "command": "C:\\Users\\TON_NOM\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+      "command": "C:\\Users\\YOUR_NAME\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
       "args": [
-        "P:\\Obsidian Vaults\\Recherche\\40 - Ressources\\pdf_highlight_mcp\\server.py"
+        "P:\\Obsidian Vaults\\Research\\40 - Resources\\pdf_highlight_mcp\\server.py"
       ],
       "env": {
-        "VAULT_PATH": "P:\\Obsidian Vaults\\Recherche"
+        "VAULT_PATH": "P:\\Obsidian Vaults\\Research"
       }
     }
   }
 }
 ```
 
-> ⚠️ Remplace `TON_NOM` par ton nom d'utilisateur Windows partout.
+> ⚠️ Replace `YOUR_NAME` with your Windows username everywhere.
 
-### 3.6 Configurer le prompt système
+### 4.6 Configure the System Prompt
 
-Dans Claude Desktop → clique sur ton avatar → **Profile** → colle le contenu du fichier `claude_system_prompt.md` dans le champ "What would you like Claude to know about you?".
+In Claude Desktop → click your avatar → **Profile** → paste the content of `claude_system_prompt_v6.md` into the "What would you like Claude to know about you?" field.
 
-### 3.7 Vérifier la connexion
+### 4.7 Verify the Connection
 
-Redémarre Claude Desktop **complètement** (clic droit icône barre des tâches → Quitter).
+Fully restart Claude Desktop (right-click taskbar icon → Quit).
 
-Au démarrage, vérifie qu'il n'y a **aucun message d'erreur MCP**. Teste avec :
+Verify there are **no MCP error messages**. Test with:
 
 ```
-Liste les fichiers à la racine de mon vault Obsidian
+List the files at the root of my Obsidian vault
 ```
 ```
-Liste les collections de ma bibliothèque Zotero
+List the collections in my Zotero library
 ```
 ```
-Liste les couleurs de surlignage disponibles
+List the available highlighting colors
 ```
 
 ---
 
-## Partie 4 — Utilisation quotidienne
+## Part 5 — Daily Workflow
 
-### Checklist avant de démarrer
+### Checklist Before Starting
 
-Avant d'ouvrir Claude Desktop, toujours avoir :
-- ✅ DD externe branché et monté sur `P:`
-- ✅ Obsidian ouvert avec le vault
-- ✅ Zotero ouvert en arrière-plan
+Before opening Claude Desktop, always have:
+- ✅ External drive plugged in and mounted as `P:`
+- ✅ Obsidian open with the vault
+- ✅ Zotero open in the background
+- ✅ Anki open in the background
 
-### Créer une note de lecture
+### Creating a Literature Note
 
-Dans Claude Desktop :
+In Claude Desktop:
 
 ```
-Crée une note de lecture pour l'article de [Auteur] [Année] sur [sujet].
+Create a literature note for the article by [Author] [Year] on [topic].
 ```
 
-Claude va automatiquement :
-1. Chercher l'article dans Zotero
-2. Trouver le PDF dans `all_pdf`
-3. Identifier les citations importantes ET les passages contextuels
-4. Surligner tout dans le PDF avec les couleurs appropriées
-5. Créer la note dans `90 - Claude/Notes de lecture/` avec les liens cliquables
-6. Proposer des notes permanentes et des liens avec les notes existantes
+Claude will automatically:
+1. Search Zotero for the article metadata
+2. Find the PDF in `all_pdf`
+3. Identify key citations (Category A) and contextual passages (Category B)
+4. Highlight everything in the PDF with color-coded annotations
+5. Create the note in `90 - Claude/Literature Notes/` with clickable PDF++ links
+6. Generate 4–8 flashcards in the `## Flashcards` section
+7. Propose permanent notes and links to existing vault notes
 
-### Valider et déplacer une note
+### Syncing Flashcards to Anki
 
-Quand tu es satisfait d'une note créée par Claude dans `90 - Claude/` :
-1. Ouvre la note dans Obsidian
-2. Relis et corrige si besoin
-3. Déplace-la dans le dossier approprié (`10 - Notes de lecture/`, etc.)
-4. Change le champ `statut: "à valider"` en `statut: "validée"`
+After validating a note:
+1. Make sure Anki is open
+2. `Ctrl+P` → *Flashcards: Sync to Anki*
+3. Cards appear in Anki under `Research::Urban Geography`
+
+### Validating and Moving a Note
+
+When satisfied with a Claude-generated note in `90 - Claude/`:
+1. Open the note in Obsidian
+2. Read and correct if needed
+3. Move it to the appropriate folder (`10 - Literature Notes/`, etc.)
+4. Change `statut: "à valider"` to `statut: "validée"`
 
 ---
 
-## Partie 5 — Système de couleurs PDF
+## Part 6 — PDF Color System
 
-### Citations (→ insérées dans la note Obsidian)
+### Citations (→ inserted in the Obsidian note)
 
-| Couleur | Usage |
-|---------|-------|
-| 🟡 yellow | Citation générale, argument principal |
-| 🟢 green | Résultat / donnée empirique / statistique |
-| 🔵 blue | Définition / concept clé |
-| 🔴 red | Point critique / limite / à débattre |
-| 🟣 purple | Méthode / approche méthodologique |
-| 🟠 orange | Hypothèse / question de recherche |
+| Color | Purpose |
+|-------|---------|
+| 🟡 yellow | General citation, main argument |
+| 🟢 green | Result / empirical data / statistic |
+| 🔵 blue | Definition / key concept |
+| 🔴 red | Critical point / limitation / debate |
+| 🟣 purple | Method / methodological approach |
+| 🟠 orange | Hypothesis / research question |
 
-### Passages contextuels (→ surlignés dans le PDF uniquement)
+### Contextual Passages (→ highlighted in PDF only)
 
-| Couleur | Usage | Priorité |
-|---------|-------|----------|
-| 🩷 pink | Lien direct avec ma recherche | 1 |
-| 🩵 cyan | Conclusion / implication générale | 2 |
-| 🍋 lime | Passage méthodologique clé | 3 |
-| 🩶 gray | Mot-clé / terme technique | 4 |
+| Color | Purpose | Priority |
+|-------|---------|----------|
+| 🩷 pink | Direct link to my research | 1 |
+| 🩵 cyan | Conclusion / general implication | 2 |
+| 🍋 lime | Key methodological passage | 3 |
+| 🩶 gray | Keyword / technical term | 4 |
 
 ---
 
-## Dépannage
+## Troubleshooting
 
 ### "MCP Server disconnected"
 
-1. Vérifie que Obsidian ET Zotero sont ouverts
-2. Vérifie que le DD externe est bien monté sur `P:`
-3. Vérifie les chemins dans `claude_desktop_config.json` (doubles backslashes `\\`)
-4. Consulte les logs : `%APPDATA%\Claude\logs\`
+1. Make sure Obsidian AND Zotero are open
+2. Make sure the external drive is mounted as `P:`
+3. Check paths in `claude_desktop_config.json` (double backslashes `\\`)
+4. Check logs: `%APPDATA%\Claude\logs\`
 
-### Le PDF n'est pas trouvé par le surligneur
+### PDF not found by the highlighter
 
-- Vérifie que ZotMoov a bien copié le PDF dans `all_pdf`
-- Le nom du fichier doit être au format `Auteur(s) - Année - Titre.pdf`
-- Relance ZotMoov sur toute ta bibliothèque (Ctrl+A → clic droit → ZotMoov → Move/Copy Files)
+- Check that ZotMoov copied the PDF to `all_pdf`
+- Filename must follow: `Author(s) - Year - Title.pdf`
+- Re-run ZotMoov on your entire library: Ctrl+A → right-click → ZotMoov → Move/Copy Files
+- Use **Everything** to search your entire drive by filename instantly
 
-### Le texte n'est pas surligné dans le PDF
+### Text not highlighted in PDF
 
-- Le PDF est peut-être un scan (image) sans couche texte — l'OCR est nécessaire
-- Essaie avec une citation plus courte (6-8 mots)
-- Ferme le PDF dans Obsidian avant de lancer le surlignage
+- The PDF may be a scanned image without a text layer — OCR required
+- Try with a shorter excerpt (6–8 words)
+- Close the PDF in Obsidian before running the highlighter
 
-### Erreur Python "No module named encodings"
+### Flashcards not appearing in Anki
 
-Tu as plusieurs versions de Python. Utilise le chemin complet vers Python 3.11 :
+- Make sure Anki is open with AnkiConnect installed
+- Check that the `#basic` tag is on the line right after `## Flashcards`
+- Try `Ctrl+P` → *Flashcards: Sync to Anki* again
+
+### Python "No module named encodings" error
+
+Multiple Python versions conflict. Use the full path to Python 3.11:
 ```powershell
-C:\Users\TON_NOM\AppData\Local\Programs\Python\Python311\python.exe -m pip install ...
+C:\Users\YOUR_NAME\AppData\Local\Programs\Python\Python311\python.exe -m pip install ...
 ```
 
 ---
 
-## Sur un deuxième PC
+## Setting Up on a Second PC
 
-1. Installe tous les prérequis (Obsidian, Zotero, Node.js, Python, Claude Desktop)
-2. **Fixe la même lettre de lecteur** pour le DD externe :
-   - Gestion des disques → clic droit DD externe → Modifier la lettre → `P:`
-3. Copie le `claude_desktop_config.json` en adaptant `TON_NOM`
-4. Réinstalle les dépendances Python et Node.js
-5. Le vault et les PDFs sont déjà sur le DD — rien à migrer
+1. Install all prerequisites (Obsidian, Zotero, Anki, Node.js, Python, Claude Desktop)
+2. **Set the same drive letter** for the external drive:
+   - Disk Management → right-click external drive → Change Drive Letter → `P:`
+3. Copy `claude_desktop_config.json` adapting `YOUR_NAME`
+4. Reinstall Python and Node.js dependencies
+5. The vault and PDFs are already on the drive — nothing to migrate
 
 ---
 
-## Fichiers fournis
+## Files in This Repository
 
-| Fichier | Description |
-|---------|-------------|
-| `server.py` | Serveur MCP de surlignage PDF |
-| `claude_system_prompt_v5.md` | Prompt système pour Claude Desktop |
-| `claude_desktop_config.json` | Fichier de configuration de Claude Desktop |
-| `README.md` | Ce fichier |
+| File | Description |
+|------|-------------|
+| `server.py` | MCP PDF highlighting server |
+| `claude_system_prompt_v6.md` | System prompt for Claude Desktop |
+| `README.md` | This file (English) |
+| `LISEZMOI.md` | French version |
