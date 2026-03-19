@@ -450,7 +450,8 @@ C:\Users\TON_NOM\AppData\Local\Programs\Python\Python311\python.exe -m pip insta
 | Fichier | Description |
 |---------|-------------|
 | `server.py` | Serveur MCP de surlignage PDF |
-| `claude_system_prompt_v6.md` | Prompt système pour Claude Desktop |
+| `claude_system_prompt_fr.md` | Prompt système pour Claude Desktop en français |
+| `claude_system_prompt_en.md` | Prompt système pour Claude Desktop en anglais |
 | `setup.ps1` | Lanceur PowerShell — exécute ce fichier pour démarrer |
 | `setup.py`  | Script Python de configuration interactive (appelé par setup.ps1) |
 | `README.md` | Ce fichier (anglais) |

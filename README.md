@@ -451,7 +451,8 @@ C:\Users\YOUR_NAME\AppData\Local\Programs\Python\Python311\python.exe -m pip ins
 | File | Description |
 |------|-------------|
 | `server.py` | MCP PDF highlighting server |
-| `claude_system_prompt_v6.md` | System prompt for Claude Desktop |
+| `claude_system_prompt_en.md` | System prompt for Claude Desktop in english |
+| `claude_system_prompt_fr.md` | System prompt for Claude Desktop in french |
 | `setup.ps1` | PowerShell launcher — run this to start setup |
 | `setup.py`  | Interactive Python setup script (called by setup.ps1) |
 | `README.md` | This file (English) |
